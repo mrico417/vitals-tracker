@@ -1,3 +1,6 @@
+const { createTables } = require('./db');
+
+
 // setup express app
 const express = require('express');
 const app = express();
@@ -17,6 +20,8 @@ const init = async () => {
     app.listen(port, ()=> {
         console.log("App is listening on port", port);
     })
+
+    await createTables();
 
 };
 
