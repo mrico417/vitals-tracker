@@ -12,7 +12,7 @@ app.use(require('morgan')('dev'));
 const init = async () => {
 
     // declare port to listen on
-    const port = process.env.DATABASE_URL || 4001;
+    const port = process.env.PORT || 4001;
 
     app.listen(port, ()=> {
         console.log("App is listening on port", port);
