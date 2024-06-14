@@ -1,5 +1,8 @@
+const {v4:uuidv4} = require('uuid');
+
 const pg = require('pg');
 const client = new pg.Client(process.env.DATABASE_URL || 'postgres://localhost/vitals_tracker_db');
+
 
 const createTables = async () => {
     try {
@@ -11,19 +14,13 @@ const createTables = async () => {
                 DROP TABLE IF EXISTS login_vital_favorites;
                 DROP TABLE IF EXISTS vital;
                 DROP TABLE IF EXISTS login;
-                DROP TABLE IF EXISTS role;
-
-                CREATE TABLE role(
-                    id UUID PRIMARY KEY,
-                    role_name VARCHAR(25) UNIQUE NOT NULL
-                );
-                    
+                                                
                 CREATE TABLE login(
                     id UUID PRIMARY KEY,
                     login_name VARCHAR(150) UNIQUE NOT NULL,
                     email VARCHAR(255) UNIQUE NOT NULL,
                     password VARCHAR NOT NULL,
-                    role_id UUID REFERENCES role(id),
+                    role_name VARCHAR(50) NOT NULL,
                     is_active BOOLEAN DEFAULT false,  
                     created TIMESTAMP DEFAULT now(),
                     updated TIMESTAMP DEFAULT now()
@@ -48,6 +45,7 @@ const createTables = async () => {
                     value DECIMAL NOT NULL,
                     created TIMESTAMP DEFAULT now()
                 );
+
             `
         ;
 
