@@ -1,5 +1,3 @@
-const {v4:uuidv4} = require('uuid');
-
 const pg = require('pg');
 const client = new pg.Client(process.env.DATABASE_URL || 'postgres://localhost/vitals_tracker_db');
 
