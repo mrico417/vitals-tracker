@@ -1,28 +1,21 @@
-const { createTables } = require('./db');
-
-
-// setup express app
 const express = require('express');
 const app = express();
+const port = process.env.PORT || 3000;
 
-// allow app to accept json payload
 app.use(express.json());
-
-// enable debugging with morgan for dev environment
 app.use(require('morgan')('dev'));
+app.use('/api/auth/register',require('./routes/registration-route'));
+app.use('/api/auth/login', require('./routes/login-route'));
 
-// start the express app
-const init = async () => {
+app.use((err, req, res, next) => {
+    console.log(err);
+    res.status(err.status || 500).send({ error: err.message || err });
+});
+    
+app.listen(port,()=> {
+    console.log(`App is listening on port ${port}`);
+});
 
-    // declare port to listen on
-    const port = process.env.PORT || 4001;
 
-    app.listen(port, ()=> {
-        console.log("App is listening on port", port);
-    })
 
-    await createTables();
 
-};
-
-init();
