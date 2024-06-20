@@ -4,8 +4,6 @@ const client = new pg.Client(process.env.DATABASE_URL || 'postgres://localhost/v
 const createTables = async() => {
     try {
         await client.connect();
-        console.log(`Connected to database...`);
-
         const sql = 
             `
                 DROP TABLE IF EXISTS record_vital CASCADE;
@@ -44,9 +42,8 @@ const createTables = async() => {
             `
         ;
 
-        await client.query(sql);
-        console.log("Created tables...")
-        return;
+        return await client.query(sql);
+        
         
     } catch (error) {
         console.log(error);
@@ -54,11 +51,7 @@ const createTables = async() => {
     }
 };
 
-(async()=>{
-    await createTables()
-})()
-
-
 module.exports = {
-    client
+    client,
+    createTables
 };
