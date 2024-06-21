@@ -43,10 +43,55 @@ const fetchVitals = async (req,res,next) => {
 
 };
 
+// record a vital for registered login
+const recordVital = async(req,res,next) => {
+    try {
+        if(req.login.id !== req.params.login_id){
+            const authErr = Error("Not authorized");
+            authErr.status = 401;
+            throw authErr
+        }
+
+        if(!req.body.vital_id || !req.body.vital_value || !req.body.created_datetime){
+            const payloadErr = Error("Invalid data");
+            payloadErr.status = 401;
+            throw payloadErr;
+        }
+
+        const { vital_id, vital_value , created_datetime } = req.body
+        
+        iso_created_datetime = new Date(created_datetime).toISOString();
+
+        const sql = `
+                INSERT INTO record_vital(id,login_id,vital_id,value,created)
+                VALUES($1,$2,$3,$4,$5)
+                RETURNING *;`
+            
+        const response = await client.query(sql,[uuidv4(),req.login.id,vital_id,vital_value,iso_created_datetime]);
+        if(!response.rows){
+            const dbErr = Error("Unable to record vital");
+            dbErr.status = 401;
+            throw dbErr;
+        }
+
+        res.send(response.rows[0]);
+
+    } catch (error) {
+        console.log(error)
+        next(error);
+    }
+}
+
 // add favorite Vital for login
 const addFavoriteVital = async(req,res,next) => {
     try {
-        if (!req.login || !req.body.vital_id){
+        if(req.login.id !== req.params.login_id){
+            const authError = Error('Not authorized')
+            authError.status = 401;
+            throw authError;
+        }
+
+        if (!req.body.vital_id){
             const payloadErr = Error('Invalid data');
             payloadErr.status = 401;
             throw payloadErr;
@@ -80,6 +125,7 @@ const addFavoriteVital = async(req,res,next) => {
 module.exports = {
     seedVitals, //called only at ../index.js
     fetchVitals,
+    recordVital,
     addFavoriteVital
     
 }
