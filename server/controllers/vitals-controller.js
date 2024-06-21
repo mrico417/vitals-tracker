@@ -43,9 +43,43 @@ const fetchVitals = async (req,res,next) => {
 
 };
 
+// add favorite Vital for login
+const addFavoriteVital = async(req,res,next) => {
+    try {
+        if (!req.login || !req.body.vital_id){
+            const payloadErr = Error('Invalid data');
+            payloadErr.status = 401;
+            throw payloadErr;
+        }
+
+        const { vital_id } = req.body;
+
+        const sql = `
+            INSERT INTO login_vital_favorites(id,login_id,vital_id) 
+            VALUES ($1,$2,$3)
+            RETURNING *;`
+        
+        const response = await client.query(sql,[uuidv4(),req.login.id,vital_id]);
+        if(!response.rows){
+            const dbErr = Error('Unable to add vital as favorite');
+            dbErr.status = 401;
+            throw dbErr;
+        }
+
+        res.send(response.rows[0]);
+
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+
+};
+
+
 
 module.exports = {
     seedVitals, //called only at ../index.js
-    fetchVitals
+    fetchVitals,
+    addFavoriteVital
     
 }
