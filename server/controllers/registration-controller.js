@@ -44,6 +44,14 @@ const createRegistrationAndGetJWT = async(req,res,next) => {
 
 const updateRegistration = async(req,res,next) => {
     try {
+
+        if(!req.login.id !== req.params.login_id){
+            const authErr = Error('Not authorized');
+            authErr.status = 401;
+            throw authErr;
+        }
+
+
         if(!req.body.login_name || !req.body.email || !req.body.password){
             const updateErr = Error("Invalid data");
             updateErr.status = 401;
