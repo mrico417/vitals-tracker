@@ -43,6 +43,41 @@ const fetchVitals = async (req,res,next) => {
 
 };
 
+// fetch recorded vitals by registered login_id
+const fetchRecordedVitalsByLoginId = async(req,res,next) => {
+
+    try {
+        if(req.login.id !== req.params.login_id){
+            const authErr = Error('Not authorized');
+            authErr.status = 401;
+            throw authErr;
+        }
+
+        // the reason for the subquery is because is best practice
+        // to first filter out records that are needed and then join 
+        const sql = `
+                SELECT  to_char(((rv.created AT TIME ZONE 'UTC') AT TIME ZONE 'CDT'),'MM-DD HH-PM') AS created_CDT, v.vital_name, rv.value
+                FROM    (SELECT vital_id, created, value
+                         FROM record_vital
+                         WHERE login_id = $1) AS rv
+                         INNER JOIN vital As v
+                         ON rv.vital_id = v.id
+                ORDER BY rv.created DESC
+                LIMIT 20;`
+        
+        const response = await client.query(sql,[req.login.id]);
+        if (!response.rows){
+            const dbErr = Error('Error fetching recorded vitals');
+            dbErr.status = 401;
+            throw dbErr;
+        }
+        res.send({data: response.rows});
+        
+    } catch (error) {
+        next(error);
+    }
+};
+
 // record a vital for registered login
 const recordVital = async(req,res,next) => {
     try {
@@ -126,6 +161,7 @@ module.exports = {
     seedVitals, //called only at ../index.js
     fetchVitals,
     recordVital,
-    addFavoriteVital
+    addFavoriteVital,
+    fetchRecordedVitalsByLoginId
     
 }
