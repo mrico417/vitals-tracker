@@ -17,8 +17,8 @@ const createTables = async() => {
                 );
                 CREATE TABLE login (
                     id UUID PRIMARY KEY,
-                    login_name VARCHAR(150),
-                    email VARCHAR(255),
+                    login_name VARCHAR(150) UNIQUE NOT NULL,
+                    email VARCHAR(255) UNIQUE NOT NULL,
                     password VARCHAR,
                     role_name VARCHAR(50) NOT NULL,
                     is_active BOOLEAN DEFAULT true NOT NULL,

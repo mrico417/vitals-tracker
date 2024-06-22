@@ -2,7 +2,7 @@ const {v4:uuidv4} = require('uuid');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { client } = require('../db');
-const { jwtSecret } = require('../secrets');
+const { jwtSecret , dataAdminSecret } = require('../secrets');
 
 const createRegistrationAndGetJWT = async(req,res,next) => {
 
@@ -37,6 +37,48 @@ const createRegistrationAndGetJWT = async(req,res,next) => {
 
     } catch (error) {
         console.log(error);
+        next(error);
+        
+    }
+};
+const createAdminRegistrationAndGetJWT = async(req,res,next) => {
+
+    try {
+        if(!req.body.login_name || !req.body.email || !req.body.password || !req.body.admin_secret){
+            const registrationErr = Error("Invalid registration");
+            registrationErr.status = 401;
+            throw registrationErr;
+        }
+
+        const { login_name, email, password, admin_secret } = req.body;
+
+        if(admin_secret !== dataAdminSecret){
+            const adminSecretErr = Error("Invalid registration");
+            adminSecretErr.status = 401;
+            throw adminSecretErr;
+        }
+
+        const sql = `
+                INSERT INTO login (id,login_name,email,password,role_name)
+                VALUES ($1,$2,$3,$4,'data-admin')
+                RETURNING id, role_name;
+            `
+        ;
+
+        const response = await client.query(sql,[uuidv4(),login_name,email,await bcrypt.hash(password,3)]);
+        if(!response.rows){
+            const dbErr = Error("Unable to create admin role registration");
+            dbErr.status = 401;
+            throw dbErr;
+        }
+        const { id, role_name } = response.rows[0];
+        console.log(id);
+        
+        res.send({
+            token: jwt.sign({id,role_name},jwtSecret)
+        });
+
+    } catch (error) {
         next(error);
         
     }
@@ -85,5 +127,6 @@ const updateRegistration = async(req,res,next) => {
 
 module.exports = {
     createRegistrationAndGetJWT,
+    createAdminRegistrationAndGetJWT,
     updateRegistration
 }
