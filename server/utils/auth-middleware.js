@@ -55,7 +55,7 @@ const isAuthenticated = async(req,res,next) => {
             throw authErr;
         }
         const [_,token] = req.headers.authorization.split(' ');
-        req.login = await fetchLoginByToken(token);
+        req.login = await fetchLoginByToken(token,false);
         next();
     } catch (error) {
         console.log(error);
@@ -81,7 +81,6 @@ const isAdminAuthenticated = async(req,res,next) => {
 
 const fetchLoginByToken = async (token,isAdmin) =>{
     let loginID;
-    let role_name;
 
     try {
 
@@ -93,27 +92,28 @@ const fetchLoginByToken = async (token,isAdmin) =>{
             roleErr.status = 401;
             throw roleErr;
         }
+        
+        const sql=`
+        SELECT id, email
+        FROM login
+        WHERE id=$1;`
+        ;
+        const response = await client.query(sql,[loginID]);
+        
+        if(!response.rows.length){
+            const dbErr = Error("Not authorized");
+            tokenErr.status = 401;
+            throw tokenErr;
+        }
+        
+        return response.rows[0];
+        
     } catch(ex) {
         const tokenErr = Error("Not authorized");
         tokenErr.status = 401;
         throw tokenErr
+        
     }
-    
-    const sql=`
-        SELECT id, email
-        FROM login
-        WHERE id=$1;`
-    ;
-    const response = await client.query(sql,[loginID]);
-
-    if(!response.rows.length){
-        const dbErr = Error("Not authorized");
-        tokenErr.status = 401;
-        throw tokenErr;
-    }
-
-    return response.rows[0];
-
 };
 
 
