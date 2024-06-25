@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { fetchVitals, addFavoriteVital, recordVital, fetchRecordedVitalsByLoginId } = require('../controllers/vitals-controller');
-const { isAuthenticated } = require('../utils/auth-middleware');
+const { fetchVitals, addFavoriteVital, recordVital, fetchRecordedVitalsByLoginId, createVital } = require('../controllers/vitals-controller');
+const { isAuthenticated, isAdminAuthenticated } = require('../utils/auth-middleware');
 
 // get vitals for any visitor
 router.get('/', fetchVitals);
@@ -14,6 +14,9 @@ router.get('/:login_id/', isAuthenticated, fetchRecordedVitalsByLoginId);
 
 // only a registered login can add a vital as favorite for tracking
 router.post('/:login_id/favorite-vitals', isAuthenticated, addFavoriteVital);
+
+// only a data-admin role can add new vitals to the database
+router.post('/admin/:login_id', isAdminAuthenticated, createVital);
 
 
 

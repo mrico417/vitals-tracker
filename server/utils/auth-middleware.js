@@ -63,18 +63,40 @@ const isAuthenticated = async(req,res,next) => {
     }
 };
 
-const fetchLoginByToken = async (token) =>{
+const isAdminAuthenticated = async(req,res,next) => {
+    try {
+        if(!req.headers.authorization)
+        {
+            const authErr = Error("Invalid authorization");
+            authErr.status = 401;
+            throw authErr;
+        }
+        const [_,token] = req.headers.authorization.split(' ');
+        req.login = await fetchLoginByToken(token,true);
+        next();
+    } catch (error) {
+        next(error);
+    }
+};
+
+const fetchLoginByToken = async (token,isAdmin) =>{
     let loginID;
+    let role_name;
 
     try {
 
         const tokenDecoded = jwt.verify(token,jwtSecret);
         loginID = tokenDecoded.id;
+
+        if (isAdmin && tokenDecoded.role_name !== "data-admin"){
+            const roleErr = Error("Not authorized")
+            roleErr.status = 401;
+            throw roleErr;
+        }
     } catch(ex) {
         const tokenErr = Error("Not authorized");
         tokenErr.status = 401;
         throw tokenErr
-
     }
     
     const sql=`
@@ -98,5 +120,6 @@ const fetchLoginByToken = async (token) =>{
 
 module.exports = {
     authenticate,
-    isAuthenticated
+    isAuthenticated,
+    isAdminAuthenticated
 }
