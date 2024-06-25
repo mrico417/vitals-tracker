@@ -20,6 +20,40 @@ const seedVitals = async () => {
 
 };
 
+// only a data-admin role can create a new Vital from api/vitals/admin/:login_id
+const createVital = async(req,res,next) => {
+    try {
+        if (req.params.login_id !== req.login.id){
+            const authErr = Error("Not authorized");
+            authErr.status = 401;
+            throw authErr;
+        }
+
+        if(!req.body.vital_name){
+            const payloadErr = Erro("Invalid data");
+            payloadErr.status = 401;
+            throw payloadErr;
+        }
+
+        const { vital_name } = req.body;
+
+        const sql = `
+                INSERT INTO vital(id,vital_name)
+                VALUES($1,$2)
+                RETURNING *;`
+
+        const response = await client.query(sql,[uuidv4(),vital_name]);
+        if(!response.rows){
+            const dbErr = Error("Unable to create vital");
+            dbErr.status = 401;
+            throw dbErr;
+        }
+        res.send(response.rows[0]);
+    } catch (error) {
+        next(error);
+    }
+};
+
 
 // fetch all Vitals in ascending order
 const fetchVitals = async (req,res,next) => {
@@ -53,8 +87,8 @@ const fetchRecordedVitalsByLoginId = async(req,res,next) => {
             throw authErr;
         }
 
-        // the reason for the subquery is because is best practice
-        // to first filter out records that are needed and then join 
+        // this subquery is a best practice
+        // by first filtering out records that are needed and then join 
         const sql = `
                 SELECT  to_char(((rv.created AT TIME ZONE 'UTC') AT TIME ZONE 'CDT'),'MM-DD HH-PM') AS created_CDT, v.vital_name, rv.value
                 FROM    (SELECT vital_id, created, value
@@ -162,6 +196,7 @@ module.exports = {
     fetchVitals,
     recordVital,
     addFavoriteVital,
-    fetchRecordedVitalsByLoginId
+    fetchRecordedVitalsByLoginId,
+    createVital //called only by admin role at vitals-route.js
     
 }
