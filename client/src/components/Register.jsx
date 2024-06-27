@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export const Register = ({ setToken }) => {
 	const [newRegistration, setNewRegistration] = useState();
+	const navigate = useNavigate();
 
 	const handleRegistration = async (event) => {
 		event.preventDefault();
@@ -22,6 +24,7 @@ export const Register = ({ setToken }) => {
 			const result = await response.json();
 			//console.log(result);
 			setToken(result.token);
+			navigate("/");
 		} catch (err) {
 			//console.log(err);
 		}
