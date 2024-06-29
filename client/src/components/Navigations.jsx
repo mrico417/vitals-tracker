@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 export const Navigations = ({ login }) => {
 	return (
 		<div className="cls-navigations-container">
-			<Link to="/">Vitals</Link>
+			<Link to="/vitals">Vitals</Link>
 
 			{login ? (
 				<>
-					{/* <Link to="/myvitals">My Vitals</Link> */}
+					<Link to="/myvitals">My Vitals</Link>
 					{/* <Link to="/account">Account</Link> */}
 				</>
 			) : (

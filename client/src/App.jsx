@@ -6,6 +6,7 @@ import { Routes, Route } from "react-router-dom";
 import { Register } from "./components/Register";
 import { Login } from "./components/Login";
 import { Vitals } from "./components/Vitals";
+import { MyVitals } from "./components/MyVitals";
 
 function App() {
 	const [login, setLogin] = useState(null);
@@ -26,8 +27,10 @@ function App() {
 				<Navigations login={login} />
 				<Routes>
 					<Route path="/" element={<Vitals login={login} />} />
+					<Route path="/vitals" element={<Vitals login={login} />} />
 					<Route path="/register" element={<Register setLogin={setLogin} />} />
 					<Route path="/login" element={<Login setLogin={setLogin} />} />
+					<Route path="/myvitals" element={<MyVitals login={login} />} />
 				</Routes>
 			</div>
 		</>
