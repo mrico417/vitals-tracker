@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 
-export const Navigations = ({ token }) => {
+export const Navigations = ({ login }) => {
 	return (
 		<div className="cls-navigations-container">
-			<Link to="/vitals">Vitals</Link>
+			<Link to="/">Vitals</Link>
 
-			{token ? (
+			{login ? (
 				<>
 					{/* <Link to="/myvitals">My Vitals</Link> */}
 					{/* <Link to="/account">Account</Link> */}

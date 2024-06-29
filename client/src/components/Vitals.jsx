@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { VitalCard } from "./VitalCard";
 
-export const Vitals = ({ token }) => {
+export const Vitals = ({ login }) => {
 	// useState to store vitals
 	const [vitals, setVitals] = useState([]);
 	const [selectedVitalID, setSelectedVitalID] = useState({});
@@ -31,10 +31,10 @@ export const Vitals = ({ token }) => {
 
 	const handleSave = async (event) => {
 		event.preventDefault();
-		console.log(token.id);
+		console.log(login.id);
 
 		try {
-			const response = await fetch(`/api/vitals/${token.id}`, {
+			const response = await fetch(`/api/vitals/${login.id}`, {
 				method: "POST",
 				body: JSON.stringify({
 					vital_id: selectedVitalID,
@@ -43,12 +43,12 @@ export const Vitals = ({ token }) => {
 				}),
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
+					Authorization: `Bearer ${window.localStorage.getItem("token")}`,
 				},
 			});
 
 			const result = await response.json();
-			//console.log(result.token);
+			//console.log(result.login);
 			console.log(result);
 		} catch (err) {
 			//console.log(err);
