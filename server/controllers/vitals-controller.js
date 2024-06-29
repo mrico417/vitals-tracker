@@ -90,14 +90,14 @@ const fetchRecordedVitalsByLoginId = async(req,res,next) => {
         // this subquery is a best practice
         // by first filtering out records that are needed and then join 
         const sql = `
-                SELECT  to_char(((rv.created AT TIME ZONE 'UTC') AT TIME ZONE 'CDT'),'MM-DD HH-PM') AS created_CDT, v.vital_name, rv.value
+                SELECT  to_char(((rv.created AT TIME ZONE 'UTC') AT TIME ZONE 'CDT'),'MM-DD HH-PM') AS created_cdt, v.vital_name, rv.value
                 FROM    (SELECT vital_id, created, value
                          FROM record_vital
                          WHERE login_id = $1) AS rv
                          INNER JOIN vital As v
                          ON rv.vital_id = v.id
                 ORDER BY rv.created DESC
-                LIMIT 20;`
+                LIMIT 10;`
         
         const response = await client.query(sql,[req.login.id]);
         if (!response.rows){
