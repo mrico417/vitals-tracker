@@ -4,6 +4,22 @@ const bcrypt = require('bcrypt');
 const { client } = require('../db');
 const { jwtSecret , dataAdminSecret } = require('../secrets');
 
+
+const fetchMe = async (req, res, next) =>{
+
+    try {
+        if(!req.login){
+            const authErr = Error("Not authorized");
+            authErr.status = 401;
+            throw authErr;
+        }
+        res.send(req.login);
+    } catch (error) {
+        next(error)
+    }
+
+};
+
 const createRegistrationAndGetJWT = async(req,res,next) => {
 
     try {
@@ -126,6 +142,7 @@ const updateRegistration = async(req,res,next) => {
 }
 
 module.exports = {
+    fetchMe,
     createRegistrationAndGetJWT,
     createAdminRegistrationAndGetJWT,
     updateRegistration
