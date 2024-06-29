@@ -39,7 +39,7 @@ export const Vitals = ({ login }) => {
 				body: JSON.stringify({
 					vital_id: selectedVitalID,
 					vital_value: vitalInfo.vital_value,
-					created_datetime: vitalInfo.created_datetime,
+					created_datetime: new Date(vitalInfo.created_datetime).toISOString(),
 				}),
 				headers: {
 					"Content-Type": "application/json",
@@ -90,7 +90,7 @@ export const Vitals = ({ login }) => {
 						placeholder="vital_value"
 					/>
 					<input
-						type="date"
+						type="datetime-local"
 						name="created_datetime"
 						id="created_datetime"
 						placeholder="created_datetime"
