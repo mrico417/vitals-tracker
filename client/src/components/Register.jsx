@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { attemptGetLoginWithJWT } from "../api/auth";
 
-export const Register = ({ setToken }) => {
+export const Register = ({ setLogin }) => {
 	const [newRegistration, setNewRegistration] = useState();
 	const navigate = useNavigate();
 
@@ -23,7 +24,9 @@ export const Register = ({ setToken }) => {
 
 			const result = await response.json();
 			//console.log(result);
-			setToken(result.token);
+			window.localStorage.setItem("token", result.token);
+			setLogin(await attemptGetLoginWithJWT());
+
 			navigate("/");
 		} catch (err) {
 			//console.log(err);

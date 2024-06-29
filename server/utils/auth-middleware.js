@@ -121,5 +121,5 @@ const fetchLoginByToken = async (token,isAdmin) =>{
 module.exports = {
     authenticate,
     isAuthenticated,
-    isAdminAuthenticated
+    isAdminAuthenticated,
 }
