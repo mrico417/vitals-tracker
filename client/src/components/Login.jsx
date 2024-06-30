@@ -4,6 +4,7 @@ import { attemptGetLoginWithJWT } from "../api/auth";
 
 export const Login = ({ setLogin }) => {
 	const [loginCredentials, setLoginCredentials] = useState();
+	const [loginErr, setLoginErr] = useState(null);
 	const navigate = useNavigate();
 
 	const handleLogin = async (event) => {
@@ -23,11 +24,15 @@ export const Login = ({ setLogin }) => {
 
 			const result = await response.json();
 			//console.log(result.token);
-			window.localStorage.setItem("token", result.token);
-			setLogin(await attemptGetLoginWithJWT());
-			navigate("/");
+			if (response.ok) {
+				window.localStorage.setItem("token", result.token);
+				setLogin(await attemptGetLoginWithJWT());
+				navigate("/");
+			} else if (response.status === 401) {
+				setLoginErr("Invalid login and password");
+			}
 		} catch (err) {
-			//console.log(err);
+			console.log(err);
 		}
 	};
 
@@ -61,6 +66,7 @@ export const Login = ({ setLogin }) => {
 					placeholder="password"
 				/>
 				<button type="submit">Login</button>
+				{loginErr ? <div>{loginErr}</div> : ""}
 			</form>
 		</div>
 	);
