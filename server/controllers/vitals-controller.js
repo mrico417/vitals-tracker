@@ -90,8 +90,8 @@ const fetchRecordedVitalsByLoginId = async(req,res,next) => {
         // this subquery is a best practice
         // by first filtering out records that are needed and then join 
         const sql = `
-                SELECT  to_char(((rv.created AT TIME ZONE 'UTC') AT TIME ZONE 'CDT'),'MM-DD HH-PM') AS created_cdt, v.vital_name, rv.value
-                FROM    (SELECT vital_id, created, value
+                SELECT  to_char(((rv.created AT TIME ZONE 'UTC') AT TIME ZONE 'CDT'),'MM-DD HH-PM') AS created_cdt, v.vital_name, rv.value, rv.id
+                FROM    (SELECT id, vital_id, created, value
                          FROM record_vital
                          WHERE login_id = $1) AS rv
                          INNER JOIN vital As v
@@ -151,6 +151,34 @@ const recordVital = async(req,res,next) => {
     }
 }
 
+// delete recorded vital with 
+const deleteRecordedVital = async (req,res,next) => {
+    try {
+        if(req.login.id !== req.params.login_id){
+            const authErr = Error("Not authorized");
+            authErr.status = 401;
+            throw authErr;
+        }
+
+        if(!req.params.rv_id){
+            const payloadErr = Error("Invalid params");
+            payloadErr.status = 401;
+            throw payloadErr;
+        }
+
+        const {rv_id} = req.params;
+
+        const sql = `
+            DELETE FROM record_vital
+            WHERE id=$1`
+
+        const response = await client.query(sql,[rv_id]);
+        res.send(response);
+    } catch (error) {
+        next(error);
+    }
+};
+
 // add favorite Vital for login
 const addFavoriteVital = async(req,res,next) => {
     try {
@@ -197,6 +225,7 @@ module.exports = {
     recordVital,
     addFavoriteVital,
     fetchRecordedVitalsByLoginId,
-    createVital //called only by admin role at vitals-route.js
+    createVital, //called only by admin role at vitals-route.js
+    deleteRecordedVital
     
 }

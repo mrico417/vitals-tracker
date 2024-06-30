@@ -6,6 +6,7 @@ export const Vitals = ({ login }) => {
 	const [vitals, setVitals] = useState([]);
 	const [selectedVitalID, setSelectedVitalID] = useState({});
 	const [vitalInfo, setVitalInfo] = useState();
+	const [isSaved, setIsSaved] = useState(false);
 
 	// fetch the vitals from the api with useEffect
 	const getVitals = async () => {
@@ -34,7 +35,7 @@ export const Vitals = ({ login }) => {
 		console.log(login.id);
 
 		try {
-			const response = await fetch(`/api/vitals/${login.id}`, {
+			const response = await fetch(`/api/vitals/login/${login.id}`, {
 				method: "POST",
 				body: JSON.stringify({
 					vital_id: selectedVitalID,
