@@ -1,7 +1,7 @@
-export const VitalCard = ({ vital, setSelectedVitalID }) => {
+export const VitalCard = ({ vital, setSelectedVitalID, setIsSaved }) => {
 	const updateVitalSelection = (vital_id) => {
+		setIsSaved(false);
 		setSelectedVitalID(vital_id);
-		console.log(vital_id);
 	};
 
 	return (
