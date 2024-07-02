@@ -49,8 +49,11 @@ export const Vitals = ({ login }) => {
 			});
 
 			const result = await response.json();
-			//console.log(result.login);
-			console.log(result);
+
+			if (response.ok) {
+				setIsSaved(true);
+				event.target.reset();
+			}
 		} catch (err) {
 			//console.log(err);
 		}
@@ -58,7 +61,6 @@ export const Vitals = ({ login }) => {
 
 	const handleRecordVitalInputChange = (event) => {
 		//console.log(event.target.name, event.target.value);
-
 		setVitalInfo({
 			...vitalInfo,
 			[event.target.name]: event.target.value,
@@ -74,6 +76,7 @@ export const Vitals = ({ login }) => {
 							key={vital.id}
 							vital={vital}
 							setSelectedVitalID={setSelectedVitalID}
+							setIsSaved={setIsSaved}
 						/>
 					);
 				})}
@@ -89,6 +92,7 @@ export const Vitals = ({ login }) => {
 						name="vital_value"
 						id="vital_value"
 						placeholder="vital_value"
+						onFocus={() => setIsSaved(false)}
 					/>
 					<input
 						type="datetime-local"
@@ -98,6 +102,7 @@ export const Vitals = ({ login }) => {
 					/>
 					<button type="submit">Save</button>
 				</form>
+				{isSaved ? <h5>Vital Recorded OK</h5> : ""}
 			</div>
 		</>
 	);
