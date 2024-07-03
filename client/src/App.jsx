@@ -24,7 +24,7 @@ function App() {
 	return (
 		<>
 			<div className="cls-main-container">
-				<Navigations login={login} />
+				<Navigations login={login} setLogin={setLogin} />
 				<Routes>
 					<Route path="/" element={<Vitals login={login} />} />
 					<Route path="/vitals" element={<Vitals login={login} />} />

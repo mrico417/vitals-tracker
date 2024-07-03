@@ -13,12 +13,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
+.cls-navigation-container a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
 }
-a:hover {
+.cls-navigation-container a:hover {
   color: #535bf2;
 }
 
@@ -35,7 +35,7 @@ h1 {
   line-height: 1.1;
 }
 
-button {
+.cls-vital-card {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
@@ -46,11 +46,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
+.cls-vital-card:hover {
   border-color: #646cff;
 }
-button:focus,
-button:focus-visible {
+.cls-vital-card:focus,
+.cls-vital-card:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
@@ -62,7 +62,7 @@ button:focus-visible {
   a:hover {
     color: #747bff;
   }
-  button {
+        .cls-vital-card {
     background-color: #f9f9f9;
   }
 }
