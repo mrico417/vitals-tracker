@@ -1,6 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-export const Navigations = ({ login }) => {
+export const Navigations = ({ login, setLogin }) => {
+	const navigate = useNavigate();
+
+	const logoff = () => {
+		window.localStorage.removeItem("token");
+		setLogin(false);
+		navigate("/login");
+	};
 	return (
 		<div className="cls-navigations-container">
 			<Link to="/vitals">Vitals</Link>
@@ -8,7 +15,7 @@ export const Navigations = ({ login }) => {
 			{login ? (
 				<>
 					<Link to="/myvitals">My Vitals</Link>
-					{/* <Link to="/account">Account</Link> */}
+					<button onClick={logoff}>Logoff</button>
 				</>
 			) : (
 				<>
