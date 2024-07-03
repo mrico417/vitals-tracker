@@ -100,7 +100,7 @@ export const Vitals = ({ login }) => {
 						id="created_datetime"
 						placeholder="created_datetime"
 					/>
-					<button type="submit">Save</button>
+					{login ? <button type="submit">Save</button> : ""}
 				</form>
 				{isSaved ? <h5>Vital Recorded OK</h5> : ""}
 			</div>
