@@ -5,7 +5,6 @@ export const VitalCard = ({ vital, setSelectedVitalID, setIsSaved }) => {
 	};
 
 	return (
-		<>
 			<button
 				onClick={() => updateVitalSelection(vital.id)}
 				className="cls-vital-card"
@@ -14,6 +13,5 @@ export const VitalCard = ({ vital, setSelectedVitalID, setIsSaved }) => {
 			>
 				{vital.vital_name}
 			</button>
-		</>
 	);
 };
